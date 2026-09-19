@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>HRE — Hybrid Reconciliation Engine</title>
+<style>
+:root{--bg:#07090f;--card:#10151f;--line:#1e2736;--acc:#3dffb0;--acc2:#6ea8ff;--txt:#e8edf5;--mut:#8b97ab}
+body{margin:0;font-family:system-ui,sans-serif;background:#07090f;color:#e8edf5}
+header,main,footer{padding:24px 32px}h1 span{color:#3dffb0}.card{background:#10151f;border:1px solid #1e2736;border-radius:16px;padding:18px;margin:12px 0}
+pre{background:#0b0f16;padding:12px;border-radius:10px;overflow:auto}input{width:100%;background:#0b0f16;border:1px solid #1e2736;color:#e8edf5;padding:8px;border-radius:8px}
+button{margin-top:12px;background:#3dffb0;border:0;border-radius:10px;padding:10px 14px;font-weight:700}
+</style></head><body>
+<header><h1>HYBRID <span>RECONCILIATION</span> ENGINE</h1>
+<p>ISO 20022 · Arbitrum One · PostgreSQL</p><div id="health">avvio…</div></header>
+<main>
+<div class="card"><h2>Health</h2><pre id="healthJson">{}</pre></div>
+<div class="card"><h2>pain.001</h2>
+<label>MsgId</label><input id="msgId" value="MSG-EXEC-000001"/>
+<label>Importo</label><input id="amount" value="1500.50"/>
+<label>IBAN debitore</label><input id="debtorIban" value="IT00A0123456789012345678901"/>
+<label>BIC</label><input id="debtorBic" value="UNCRITM1A23"/>
+<label>Creditore</label><input id="creditorName" value="MARIO ROSSI"/>
+<label>IBAN creditore</label><input id="creditorIban" value="IT99X0123456789012345678901"/>
+<button id="gen">Compila XML</button><pre id="xmlOut"></pre></div>
+</main>
+<script>
+fetch('/api/health').then(r=>r.json()).then(j=>{health.textContent='online '+j.ts;healthJson.textContent=JSON.stringify(j,null,2)}).catch(()=>{});
+gen.onclick=async()=>{
+ const body={msgId:msgId.value,pmtInfId:'PMT-INFO-001',endToEndId:'TX-OUT-99999',amount:amount.value,debtorName:'VAULT FINANZIARIO CENTRALE',debtorIban:debtorIban.value,debtorBic:debtorBic.value,creditorName:creditorName.value,creditorIban:creditorIban.value};
+ const r=await fetch('/api/pain001',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
+ xmlOut.textContent=await r.text();
+};
+</script></body></html>
