@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hre
+      POSTGRES_USER: hre
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hre_change_me}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hre -d hre"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  listener:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://hre:${POSTGRES_PASSWORD:-hre_change_me}@postgres:5432/hre
+      ARBITRUM_RPC_URL: ${ARBITRUM_RPC_URL:-https://arb1.arbitrum.io/rpc}
+      CONFIRMATIONS: ${CONFIRMATIONS:-3}
+      POLL_MS: ${POLL_MS:-2500}
+    command: ["node", "src/arbitrum_listener.js"]
+volumes:
+  pgdata:

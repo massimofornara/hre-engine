@@ -1,0 +1,19 @@
+[Unit]
+Description=HRE Arbitrum block listener
+After=network-online.target postgresql.service
+Wants=network-online.target
+[Service]
+Type=simple
+WorkingDirectory=/opt/hre-engine
+EnvironmentFile=/opt/hre-engine/.env
+ExecStart=/usr/bin/node src/arbitrum_listener.js
+Restart=always
+RestartSec=5
+User=hre
+Group=hre
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target
