@@ -1,0 +1,15 @@
+{
+  "name": "hre-engine",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hybrid Reconciliation Engine — ISO 20022 + Arbitrum L2 + PostgreSQL",
+  "scripts": {
+    "build": "mkdir -p dist && cp -r public/* dist/",
+    "listen": "node src/arbitrum_listener.js",
+    "start": "npx serve public -p 3000"
+  },
+  "dependencies": {
+    "ethers": "^6.13.0",
+    "pg": "^8.13.0"
+  }
+}
